@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ixi-O — 통신사의 통화 주도권을 되찾습니다</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<style>
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+
+:root {
+  --bg: #fafafa;
+  --bg2: #f3f4f6;
+  --surface: #ffffff;
+  --border: #e5e7eb;
+  --border2: #d1d5db;
+  --text: #0f0f10;
+  --text2: #374151;
+  --muted: #6b7280;
+  --muted2: #9ca3af;
+  --primary: #6d28d9;
+  --primary-light: #ede9fe;
+  --accent: #dc2626;
+  --accent-light: #fee2e2;
+  --green: #059669;
+  --green-light: #d1fae5;
+  --grad: linear-gradient(135deg, #6d28d9 0%, #db2777 100%);
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.07), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow: 0 4px 16px rgba(0,0,0,0.08), 0 2px 6px rgba(0,0,0,0.04);
+  --shadow-lg: 0 20px 60px rgba(0,0,0,0.1), 0 8px 24px rgba(0,0,0,0.06);
+  --radius: 14px;
+  --radius-sm: 8px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* NAV */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+  height: 64px;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 40px;
+  background: rgba(250,250,250,0.88);
+  backdrop-filter: blur(20px) saturate(180%);
+  border-bottom: 1px solid var(--border);
+}
+.nav-logo { display: flex; align-items: center; gap: 10px; font-size: 1.05rem; font-weight: 700; letter-spacing: -0.02em; text-decoration: none; color: var(--text); }
+.nav-badge { width: 30px; height: 30px; border-radius: 8px; background: var(--grad); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 800; }
+.nav-right { display: flex; align-items: center; gap: 4px; }
+.nav-link { font-size: 0.85rem; font-weight: 500; color: var(--muted); text-decoration: none; padding: 6px 14px; border-radius: 6px; transition: color 0.15s, background 0.15s; }
+.nav-link:hover { color: var(--text); background: var(--bg2); }
+.nav-cta { font-size: 0.85rem; font-weight: 600; color: #fff; text-decoration: none; padding: 8px 20px; border-radius: 8px; background: var(--text); margin-left: 8px; transition: opacity 0.15s; }
+.nav-cta:hover { opacity: 0.8; }
+
+/* HERO */
+#hero {
+  min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  text-align: center; padding: 100px 24px 72px;
+  background: #fff; position: relative; overflow: hidden;
+}
+.hero-orb1 { position: absolute; width: 700px; height: 700px; border-radius: 50%; background: radial-gradient(circle, rgba(109,40,217,0.09) 0%, transparent 65%); top: -200px; left: 50%; transform: translateX(-50%); pointer-events: none; }
+.hero-orb2 { position: absolute; width: 400px; height: 400px; border-radius: 50%; background: radial-gradient(circle, rgba(219,39,119,0.06) 0%, transparent 65%); bottom: 0; right: 5%; pointer-events: none; }
+.hero-grid-bg {
+  position: absolute; inset: 0; pointer-events: none;
+  background-image: linear-gradient(rgba(0,0,0,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0,0,0,0.03) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: radial-gradient(ellipse 70% 70% at 50% 40%, black 0%, transparent 80%);
+}
+.hero-inner { position: relative; z-index: 1; max-width: 760px; }
+.hero-tag {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--primary-light); color: var(--primary);
+  font-size: 0.78rem; font-weight: 600; padding: 5px 14px; border-radius: 100px;
+  margin-bottom: 28px; opacity: 0; animation: rise 0.7s 0.1s forwards;
+}
+.hero-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+.hero-h1 {
+  font-size: clamp(2.8rem, 6vw, 4.6rem); font-weight: 800; letter-spacing: -0.04em; line-height: 1.1;
+  margin-bottom: 20px; opacity: 0; animation: rise 0.8s 0.25s forwards;
+}
+.hero-h1 em { font-style: normal; background: var(--grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.hero-sub {
+  font-size: clamp(1rem, 1.6vw, 1.15rem); color: var(--muted); max-width: 500px; margin: 0 auto 36px; line-height: 1.75;
+  opacity: 0; animation: rise 0.8s 0.4s forwards;
+}
+.hero-btns { display: flex; align-items: center; justify-content: center; gap: 12px; opacity: 0; animation: rise 0.8s 0.55s forwards; }
+.btn-dark { display: inline-flex; align-items: center; gap: 8px; background: var(--text); color: #fff; font-size: 0.9rem; font-weight: 600; padding: 13px 28px; border-radius: 10px; text-decoration: none; border: none; cursor: pointer; transition: transform 0.15s, box-shadow 0.15s; box-shadow: 0 2px 8px rgba(15,15,16,0.22); }
+.btn-dark:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(15,15,16,0.22); }
+.btn-outline { display: inline-flex; align-items: center; gap: 8px; color: var(--text2); font-size: 0.9rem; font-weight: 500; padding: 12px 20px; border-radius: 10px; background: #fff; border: 1px solid var(--border2); text-decoration: none; transition: background 0.15s; }
+.btn-outline:hover { background: var(--bg2); }
+.hero-logos { margin-top: 56px; opacity: 0; animation: rise 0.8s 0.7s forwards; }
+.hero-logos-label { font-size: 0.72rem; font-weight: 500; color: var(--muted2); letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 16px; }
+.hero-logos-row { display: flex; align-items: center; justify-content: center; gap: 36px; flex-wrap: wrap; }
+.hero-logo-item { font-size: 0.88rem; font-weight: 700; color: #d1d5db; letter-spacing: -0.01em; }
+@keyframes rise { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+/* SECTION */
+.sec { padding: 88px 40px; }
+.sec-inner { max-width: 1080px; margin: 0 auto; }
+.sec-label { display: inline-flex; align-items: center; gap: 6px; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--primary); margin-bottom: 12px; }
+.sec-label::before { content: ''; display: inline-block; width: 4px; height: 4px; border-radius: 50%; background: var(--primary); }
+.sec-h2 { font-size: clamp(1.8rem, 3.5vw, 2.8rem); font-weight: 800; letter-spacing: -0.03em; line-height: 1.2; margin-bottom: 12px; }
+.sec-p { font-size: 0.95rem; color: var(--muted); line-height: 1.8; max-width: 520px; }
+.divider { border: none; border-top: 1px solid var(--border); }
+
+/* FORK */
+#fork { background: var(--bg); padding: 72px 40px; }
+.fork-hd { text-align: center; margin-bottom: 44px; }
+.fork-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; max-width: 1080px; margin: 0 auto; }
+.fork-card {
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 40px; position: relative; overflow: hidden; cursor: pointer;
+  transition: box-shadow 0.2s, transform 0.2s; box-shadow: var(--shadow-sm);
+}
+.fork-card:hover { box-shadow: var(--shadow-lg); transform: translateY(-4px); }
+.fcard-bar { position: absolute; top: 0; left: 0; right: 0; height: 4px; border-radius: var(--radius) var(--radius) 0 0; }
+.fork-card.a .fcard-bar { background: var(--accent); }
+.fork-card.b .fcard-bar { background: var(--accent); }
+.fpill { display: inline-block; font-size: 0.7rem; font-weight: 600; padding: 3px 10px; border-radius: 100px; margin-bottom: 18px; }
+.fork-card.a .fpill { background: var(--accent-light); color: var(--accent); }
+.fork-card.b .fpill { background: var(--accent-light); color: var(--accent); }
+.ftitle { font-size: clamp(1.3rem, 2.2vw, 1.75rem); font-weight: 800; letter-spacing: -0.03em; line-height: 1.25; margin-bottom: 12px; }
+.fbody { font-size: 0.88rem; color: var(--muted); line-height: 1.75; margin-bottom: 24px; }
+.flink { display: inline-flex; align-items: center; gap: 6px; font-size: 0.84rem; font-weight: 600; text-decoration: none; transition: gap 0.15s; }
+.fork-card.a .flink { color: var(--accent); }
+.fork-card.b .flink { color: var(--accent); }
+.flink:hover { gap: 10px; }
+.fbgnum { position: absolute; bottom: -12px; right: 20px; font-size: 7rem; font-weight: 900; letter-spacing: -0.06em; color: rgba(0,0,0,0.025); line-height: 1; pointer-events: none; }
+
+/* STORY (HORIZONTAL LAYOUT REWORK) */
+.story-sec { background: #fff; }
+.story-sec.alt { background: var(--bg); }
+.story-stack { display: flex; flex-direction: column; gap: 48px; }
+.story-hd { text-align: center; max-width: 760px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; }
+
+.s-badge { display: inline-flex; align-items: center; gap: 8px; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; padding: 4px 12px; border-radius: 100px; margin-bottom: 18px; }
+.story-sec .s-badge { background: var(--accent-light); color: var(--accent); }
+.story-sec.alt .s-badge { background: var(--primary-light); color: var(--primary); }
+.s-h2 { font-size: clamp(1.7rem, 3vw, 2.4rem); font-weight: 800; letter-spacing: -0.03em; line-height: 1.25; margin-bottom: 16px; }
+.s-lead { font-size: 0.98rem; color: var(--text2); line-height: 1.7; font-weight: 500; }
+
+/* Fact Banner (Merged from Fact Card) */
+.fact-banner { display: flex; flex-direction: column; align-items: center; text-align: center; border-radius: var(--radius); padding: 24px; margin-top: 24px; width: 100%; box-shadow: var(--shadow-sm); }
+.story-sec .fact-banner { background: #fff7f7; border: 1px solid #fecaca; }
+.story-sec.alt .fact-banner { background: #f5f3ff; border: 1px solid #ddd6fe; }
+.fnum { font-size: clamp(1.8rem, 3vw, 2.2rem); font-weight: 900; letter-spacing: -0.04em; line-height: 1.1; margin-bottom: 4px; }
+.story-sec .fnum { color: var(--accent); }
+.story-sec.alt .fnum { color: var(--primary); }
+.fdesc { font-size: 0.98rem; font-weight: 700; color: var(--text2); line-height: 1.45; margin-bottom: 4px; }
+.fsub { font-size: 0.85rem; color: var(--muted); line-height: 1.6; max-width: 580px; }
+
+/* Horizontal Journey */
+.j-title { font-size: 0.72rem; font-weight: 700; color: var(--muted2); letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 24px; text-align: center; }
+.j-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; position: relative; }
+.j-row::before { content: ''; position: absolute; top: 11px; left: 12.5%; right: 12.5%; height: 2px; background: var(--border); z-index: 0; }
+.story-sec.alt .j-row::before { background: var(--border2); }
+.jstep-h { text-align: center; position: relative; z-index: 1; padding-top: 32px; }
+.jstep-h .jdot { position: absolute; top: 5px; left: 50%; transform: translateX(-50%); width: 14px; height: 14px; border-radius: 50%; background: #d1d5db; border: 3px solid #fff; }
+.story-sec .jstep-h.warn .jdot { background: #f59e0b; }
+.story-sec .jstep-h.danger .jdot { background: var(--accent); }
+.story-sec.alt .jstep-h.warn .jdot { background: #f59e0b; }
+.story-sec.alt .jstep-h.danger .jdot { background: var(--primary); }
+.jlabel { font-size: 0.88rem; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+.jstep-h.warn .jlabel { color: #92400e; }
+.story-sec .jstep-h.danger .jlabel { color: var(--accent); }
+.story-sec.alt .jstep-h.danger .jlabel { color: var(--primary); }
+.jdesc { font-size: 0.8rem; color: var(--muted); line-height: 1.5; padding: 0 10px; }
+
+/* Horizontal Features */
+.feat-label { font-size: 0.72rem; font-weight: 700; color: var(--muted2); letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 24px; text-align: center; }
+.feat-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.feat-item {
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm);
+  padding: 24px 20px; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 12px;
+  transition: box-shadow 0.15s, transform 0.15s; box-shadow: var(--shadow-sm);
+}
+.feat-item:hover { box-shadow: var(--shadow); transform: translateY(-4px); }
+.ficon { width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; flex-shrink: 0; }
+.story-sec .ficon { background: var(--accent-light); }
+.story-sec.alt .ficon { background: var(--primary-light); }
+.fpain { font-size: 0.72rem; color: var(--muted2); margin-bottom: 2px; }
+.fresult { font-size: 0.92rem; font-weight: 700; color: var(--text); line-height: 1.45; }
+.ftag { display: inline-block; font-size: 0.66rem; font-weight: 600; padding: 3px 10px; border-radius: 100px; margin-top: auto; }
+.story-sec .ftag { background: var(--accent-light); color: var(--accent); }
+.story-sec.alt .ftag { background: var(--primary-light); color: var(--primary); }
+
+/* Impact Banner (Merged Quote + Biz Memo) */
+.impact-banner { border-radius: var(--radius); padding: 36px 48px; text-align: center; display: flex; flex-direction: column; gap: 12px; }
+.story-sec .impact-banner { border: 1px solid #fecaca; background: #fff0f0; }
+.story-sec.alt .impact-banner { border: 1px solid #ddd6fe; background: #f5f3ff; }
+.impact-tit { font-size: 1.1rem; font-weight: 800; letter-spacing: -0.02em; }
+.story-sec .impact-tit { color: #7f1d1d; }
+.story-sec.alt .impact-tit { color: #3730a3; }
+.impact-p { font-size: 0.92rem; font-weight: 500; line-height: 1.7; }
+.story-sec .impact-p { color: #991b1b; }
+.story-sec.alt .impact-p { color: #4338ca; }
+.impact-banner hr { border: none; border-top: 1px dashed rgba(0,0,0,0.1); margin: 8px auto; width: 60px; }
+
+/* BIZ */
+#biz { background: var(--bg); }
+.biz-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-top: 44px; }
+.biz-card {
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 30px 30px 26px; transition: box-shadow 0.2s, transform 0.2s; box-shadow: var(--shadow-sm);
+}
+.biz-card:hover { box-shadow: var(--shadow); transform: translateY(-3px); }
+.biz-iw { width: 42px; height: 42px; border-radius: 10px; background: var(--primary-light); display: flex; align-items: center; justify-content: center; font-size: 1.1rem; margin-bottom: 16px; }
+.biz-h { font-size: 1rem; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 7px; }
+.biz-b { font-size: 0.855rem; color: var(--muted); line-height: 1.75; }
+.biz-m { display: inline-flex; align-items: center; gap: 5px; font-size: 0.72rem; font-weight: 700; color: var(--primary); background: var(--primary-light); padding: 3px 10px; border-radius: 100px; margin-top: 10px; }
+
+/* TECH */
+#tech { background: #fff; }
+.tech-top { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: center; margin-bottom: 48px; }
+.tech-callout { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); padding: 28px; font-size: 0.88rem; color: var(--text2); line-height: 1.85; }
+.tech-callout strong { display: block; font-size: 0.92rem; font-weight: 800; color: var(--text); margin-bottom: 10px; }
+.tech-badges { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+.tbadge { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 26px 22px; text-align: center; box-shadow: var(--shadow-sm); }
+.tcheck { width: 38px; height: 38px; border-radius: 50%; background: var(--green-light); color: var(--green); display: flex; align-items: center; justify-content: center; font-size: 0.95rem; font-weight: 700; margin: 0 auto 12px; }
+.thead { font-size: 0.88rem; font-weight: 800; margin-bottom: 5px; }
+.tdesc { font-size: 0.76rem; color: var(--muted); line-height: 1.65; }
+.tech-footer { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 10px; margin-top: 18px; padding: 13px 18px; background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius-sm); font-size: 0.77rem; color: var(--muted); font-weight: 500; }
+.tdot { width: 3px; height: 3px; border-radius: 50%; background: var(--muted2); }
+
+/* CTA */
+#cta { background: var(--text); color: #fff; padding: 88px 40px; }
+.cta-wrap { max-width: 520px; margin: 0 auto; text-align: center; }
+.ctag { display: inline-flex; align-items: center; gap: 7px; background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.75); font-size: 0.75rem; font-weight: 600; padding: 5px 14px; border-radius: 100px; margin-bottom: 22px; }
+.cta-h2 { font-size: clamp(2.2rem, 4.5vw, 3.2rem); font-weight: 800; letter-spacing: -0.04em; line-height: 1.12; margin-bottom: 12px; }
+.cta-h2 em { font-style: normal; background: linear-gradient(135deg, #a78bfa, #f9a8d4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.cta-p { font-size: 0.92rem; color: rgba(255,255,255,0.5); line-height: 1.75; margin-bottom: 36px; }
+.cform { display: flex; flex-direction: column; gap: 9px; }
+.crow { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; }
+.cinput { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.14); color: #fff; font-family: inherit; font-size: 0.88rem; padding: 13px 15px; border-radius: 8px; outline: none; width: 100%; transition: border-color 0.15s, background 0.15s; }
+.cinput::placeholder { color: rgba(255,255,255,0.28); }
+.cinput:focus { border-color: rgba(255,255,255,0.35); background: rgba(255,255,255,0.1); }
+.cbtn { background: #fff; color: var(--text); font-family: inherit; font-size: 0.92rem; font-weight: 700; padding: 14px 24px; border-radius: 8px; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: opacity 0.15s, transform 0.15s; }
+.cbtn:hover { opacity: 0.9; transform: translateY(-1px); }
+.cmicro { margin-top: 13px; font-size: 0.76rem; color: rgba(255,255,255,0.3); line-height: 1.6; }
+
+/* FOOTER */
+footer { background: var(--text); border-top: 1px solid rgba(255,255,255,0.07); padding: 22px 40px; display: flex; align-items: center; justify-content: space-between; }
+.flogo { display: flex; align-items: center; gap: 8px; font-size: 0.84rem; font-weight: 600; color: rgba(255,255,255,0.4); }
+.fcopy { font-size: 0.73rem; color: rgba(255,255,255,0.22); }
+
+/* REVEAL */
+.reveal { opacity: 0; transform: translateY(22px); transition: opacity 0.55s ease, transform 0.55s ease; }
+.reveal.visible { opacity: 1; transform: none; }
+
+/* RESPONSIVE */
+@media (max-width: 860px) {
+  nav { padding: 0 20px; }
+  .sec { padding: 60px 20px; }
+  #fork, #cta { padding: 56px 20px; }
+  .fork-grid, .biz-grid, .tech-top, .tech-badges { grid-template-columns: 1fr; }
+  .crow { grid-template-columns: 1fr; }
+  footer { flex-direction: column; gap: 8px; text-align: center; }
+  
+  /* Horizontal Layout Mobile Adjustments */
+  .j-row::before { display: none; }
+  .j-row { grid-template-columns: 1fr; gap: 24px; }
+  .jstep-h { padding-top: 0; padding-left: 32px; text-align: left; }
+  .jstep-h .jdot { top: 4px; left: 6px; transform: none; }
+  .feat-row { grid-template-columns: 1fr; }
+  .impact-banner { padding: 28px 20px; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="#" class="nav-logo">
+    <div class="nav-badge">ix</div>
+    ixi-O
+  </a>
+  <div class="nav-right">
+    <a href="#story-a" class="nav-link">OS 종속 위협</a>
+    <a href="#story-b" class="nav-link">규제 리스크</a>
+    <a href="#biz" class="nav-link">비즈니스 임팩트</a>
+    <a href="#tech" class="nav-link">아키텍처</a>
+    <a href="#cta" class="nav-cta">PoC 문의 →</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-orb1"></div>
+  <div class="hero-orb2"></div>
+  <div class="hero-grid-bg"></div>
+  <div class="hero-inner">
+    <div class="hero-tag"><span class="hero-dot"></span>Trusted by LG U+ · Processing millions of calls</div>
+    <h1 class="hero-h1">고객들이 통화에 대한<br><em>신뢰를 잃고 있습니다.</em></h1>
+    <p class="hero-sub">네트워크 단에서 이를 해결하지 못하면,<br>향후 10년의 모바일 주도권은 소실됩니다.</p>
+    <div class="hero-btns">
+      <a href="#cta" class="btn-dark">PoC 논의 시작하기 →</a>
+      <a href="#fork" class="btn-outline">양면의 위기 확인하기</a>
+    </div>
+    <div class="hero-logos">
+      <div class="hero-logos-label">글로벌 파트너 및 레퍼런스</div>
+      <div class="hero-logos-row">
+        <span class="hero-logo-item">Maxis</span>
+        <span class="hero-logo-item">Singtel</span>
+        <span class="hero-logo-item">Elisa</span>
+        <span class="hero-logo-item">Orange</span>
+        <span class="hero-logo-item">LG U+</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FORK -->
+<div id="fork">
+  <div class="fork-hd">
+    <div class="sec-label" style="justify-content:center;">동시 다발적 위기</div>
+    <h2 class="sec-h2" 거스룰 수 없는 시장의 변화에 직면해 있습니다 </h2>
+  </div>
+  <div class="fork-grid">
+    <div class="fork-card a reveal">
+      <div class="fcard-bar"></div>
+      <div class="fpill">Mass Market Crisis</div>
+      <h3 class="ftitle">Apple과 Google의<br>통화 화면 장악</h3>
+      <p class="fbody">고객은 '알 수 없는 발신자 음소거'를 켜고, OS 기반 필터링에 전적으로 의존합니다. 통신사는 트래픽만 제공하는 'Dumb Pipe'로 전락했습니다.</p>
+      <a href="#story-a" class="flink">자세히 보기 →</a>
+      <div class="fbgnum">A</div>
+    </div>
+    <div class="fork-card b reveal">
+      <div class="fcard-bar"></div>
+      <div class="fpill">Enterprise Crisis</div>
+      <h3 class="ftitle">기록되지 않는 통화의<br>컴플라이언스 리스크</h3>
+      <p class="fbody">Zoom과 Teams가 AI 요약을 기본 제공하는 시대. 문서화되지 않는 일반 음성 통화는 기업 컴플라이언스 위반과 섀도우 IT(Shadow IT)의 온상입니다.</p>
+      <a href="#story-b" class="flink">자세히 보기 →</a>
+      <div class="fbgnum">B</div>
+    </div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- STORY A (수평 Z패턴 레이아웃 적용) -->
+<section id="story-a" class="sec story-sec">
+  <div class="sec-inner">
+    <div class="story-stack">
+      
+      <!-- 상단: 문제 제기 (Header & Fact) -->
+      <div class="story-hd reveal">
+        <div class="s-badge">위협 A · OS 종속</div>
+        <h2 class="s-h2">Apple과 Google이 이미 통화 화면을 장악했습니다</h2>
+        <p class="s-lead">고객은 스마트폰 제조사와 OS의 필터링을 신뢰합니다. 통신사는 고객 접점을 잃고 데이터 파이프라인으로 전락하고 있습니다.</p>
+        
+        <div class="fact-banner">
+          <div class="fnum">Dumb Pipe</div>
+          <div class="fdesc">통신사 패싱(Passing)의 가속화</div>
+          <div class="fsub">수신 거부와 스팸 필터링 권한을 OS가 독점함에 따라, 통화 경험의 주도권이 넘어갔습니다.</div>
+        </div>
+      </div>
+
+      <!-- 중단 1: 문제 여정 (Horizontal Timeline) -->
+      <div class="reveal">
+        <div class="j-title">주도권 상실의 여정</div>
+        <div class="j-row">
+          <div class="jstep-h"><div class="jdot"></div><div class="jlabel">악성 스팸 및 피싱 증가</div><div class="jdesc">통화망 자체에 대한 신뢰도 하락.</div></div>
+          <div class="jstep-h warn"><div class="jdot"></div><div class="jlabel">OS 필터링 기능 의존</div><div class="jdesc">고객이 아이폰/안드로이드 자체 차단 기능을 활성화.</div></div>
+          <div class="jstep-h warn"><div class="jdot"></div><div class="jlabel">통신사 접점 상실</div><div class="jdesc">통화 화면 UI/UX를 글로벌 Big Tech가 통제.</div></div>
+          <div class="jstep-h danger"><div class="jdot"></div><div class="jlabel">Dumb Pipe 고착화</div><div class="jdesc">부가가치 창출 불가. 단순 통신망 제공자로 전락.</div></div>
+        </div>
+      </div>
+
+      <!-- 중단 2: 해결책 (Horizontal Cards) -->
+      <div class="reveal">
+        <div class="feat-label">ixi-O가 네트워크 단에서 해결합니다</div>
+        <div class="feat-row">
+          <div class="feat-item">
+            <div class="ficon">🛡️</div>
+            <div class="fpain">OS 개입 전 차단</div>
+            <div class="fresult">네트워크 기반 실시간 스팸/피싱 감지</div>
+            <span class="ftag">Security & Trust</span>
+          </div>
+          <div class="feat-item">
+            <div class="ficon">🤖</div>
+            <div class="fpain">안티딥보이스 기술</div>
+            <div class="fresult">AI 합성 음성을 실시간으로 판별하여 보호</div>
+            <span class="ftag">AI Guard</span>
+          </div>
+          <div class="feat-item">
+            <div class="ficon">📱</div>
+            <div class="fpain">통신사 주도 UI/UX</div>
+            <div class="fresult">통신사 자체 앱을 통한 통화 화면 지배력 회복</div>
+            <span class="ftag">Call Handling</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 하단: 결과 및 임팩트 (Full-width Banner) -->
+      <div class="reveal">
+        <div class="impact-banner">
+          <div class="impact-tit">고객이 안심하고 받을 수 있는 네트워크 통제권. 이를 되찾아야 생태계를 방어할 수 있습니다.</div>
+          <hr>
+          <div class="impact-p"><strong>비즈니스 임팩트:</strong> 생태계 방어는 곧 ARPU 방어입니다. 고객이 OS 필터 대신 통신사의 통화 AI를 신뢰하게 만들면, 구독 경제의 핵심 플랫폼으로 자리 잡을 수 있습니다.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- STORY B (수평 Z패턴 레이아웃 적용) -->
+<section id="story-b" class="sec story-sec alt">
+  <div class="sec-inner">
+    <div class="story-stack">
+      
+      <!-- 상단: 문제 제기 (Header & Fact) -->
+      <div class="story-hd reveal">
+        <div class="s-badge">위협 B · 컴플라이언스</div>
+        <h2 class="s-h2">기록되지 않는 통화는 이제 명백한 '규제 리스크'입니다</h2>
+        <p class="s-lead">회의 솔루션들은 이미 모든 대화를 문서화하고 있습니다. 반면 일반 음성 통화는 투명성이 결여된 섀도우 IT(Shadow IT)가 되었습니다.</p>
+        
+        <div class="fact-banner">
+          <div class="fnum">Shadow IT</div>
+          <div class="fdesc">문서화되지 않는 구시대적 통화</div>
+          <div class="fsub">추적 불가, 요약 불가. 엔터프라이즈의 보안 및 관리 감독망에서 완전히 벗어난 상태입니다.</div>
+        </div>
+      </div>
+
+      <!-- 중단 1: 문제 여정 (Horizontal Timeline) -->
+      <div class="reveal">
+        <div class="j-title">기업의 통화 리스크 여정</div>
+        <div class="j-row">
+          <div class="jstep-h"><div class="jdot"></div><div class="jlabel">비즈니스 통화 발생</div><div class="jdesc">중요 계약, 합의 사항이 음성으로 오고 감.</div></div>
+          <div class="jstep-h warn"><div class="jdot"></div><div class="jlabel">기록 및 요약 부재</div><div class="jdesc">개인의 기억에 의존하며, 데이터화 실패.</div></div>
+          <div class="jstep-h warn"><div class="jdot"></div><div class="jlabel">보안 및 감독망 이탈</div><div class="jdesc">사내 컴플라이언스 시스템과 연동 불가능.</div></div>
+          <div class="jstep-h danger"><div class="jdot"></div><div class="jlabel">규제 위반 및 분쟁 리스크</div><div class="jdesc">감사 증빙 불가. 법적 분쟁 시 대응 취약.</div></div>
+        </div>
+      </div>
+
+      <!-- 중단 2: 해결책 (Horizontal Cards) -->
+      <div class="reveal">
+        <div class="feat-label">ixi-O가 B2B 통신망을 혁신합니다</div>
+        <div class="feat-row">
+          <div class="feat-item">
+            <div class="ficon">📝</div>
+            <div class="fpain">자동 문서화</div>
+            <div class="fresult">통화 종료 즉시 텍스트 변환 및 AI 요약</div>
+            <span class="ftag">AI Data Agent</span>
+          </div>
+          <div class="feat-item">
+            <div class="ficon">🔗</div>
+            <div class="fpain">엔터프라이즈 연동</div>
+            <div class="fresult">기업 CRM 및 사내 컴플라이언스 도구와 API 연동</div>
+            <span class="ftag">Data & Platform</span>
+          </div>
+          <div class="feat-item">
+            <div class="ficon">🔒</div>
+            <div class="fpain">보안 설계</div>
+            <div class="fresult">기밀 유지를 위한 On-Device 기반 처리 옵션</div>
+            <span class="ftag">Enterprise Security</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 하단: 결과 및 임팩트 (Full-width Banner) -->
+      <div class="reveal">
+        <div class="impact-banner">
+          <div class="impact-tit">엔터프라이즈급 컴플라이언스를 만족시키지 못하면, B2B 고객은 데이터망으로 이탈할 것입니다.</div>
+          <hr>
+          <div class="impact-p"><strong>신규 B2B 수익 모델:</strong> AI를 통해 일반 음성 통화를 규제 친화적이고 문서화된 자산으로 전환하면, 엔터프라이즈 대상의 프리미엄 부가 서비스(SaaS)로 막대한 수익 창출이 가능합니다.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- BIZ -->
+<section id="biz" class="sec">
+  <div class="sec-inner">
+    <div class="sec-label">ROI & Impact</div>
+    <h2 class="sec-h2">결과를 증명하는 비즈니스 수치</h2>
+    <p class="sec-p">단순한 통화 경험 개선을 넘어, 측정 가능한 ARPU 상승과 이탈 방어 효과를 제공합니다.</p>
+    <div class="biz-grid">
+      <div class="biz-card reveal"><div class="biz-iw">🛡️</div><div class="biz-h">스팸발 이탈 30% 방어</div><div class="biz-b">피싱과 스팸으로 인한 통신사 불만 및 해지율을 방어하여 연간 수천만 달러의 수익 누수를 차단합니다.</div><div class="biz-m">Retained Revenue</div></div>
+      <div class="biz-card reveal"><div class="biz-iw">📈</div><div class="biz-h">프리미엄 요금제 3% 업셀</div><div class="biz-b">AI 통화 비서 기능(요약/대신 받기)을 미끼로 기존 가입자를 고단가 요금제로 유도합니다. (월 ARPU $20 기준 시뮬레이션 완료)</div><div class="biz-m">New Premium Rev</div></div>
+      <div class="biz-card reveal"><div class="biz-iw">💼</div><div class="biz-h">B2B 엔터프라이즈 유치</div><div class="biz-b">컴플라이언스 리스크를 해결하는 통화 녹음 및 자동 문서화 기능으로 SOHO 및 기업 시장을 장악합니다.</div><div class="biz-m">B2B Expansion</div></div>
+      <div class="biz-card reveal"><div class="biz-iw">👑</div><div class="biz-h">플랫폼 주도권 방어</div><div class="biz-b">Apple/Google이 장악한 통화 접점을 되찾아 데이터 주권을 확보하고 독자 생태계를 구축합니다.</div><div class="biz-m">Ecosystem Control</div></div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- TECH -->
+<section id="tech" class="sec">
+  <div class="sec-inner">
+    <div class="tech-top">
+      <div>
+        <div class="sec-label">Architecture & Compliance</div>
+        <h2 class="sec-h2">기존 망을 훼손하지 않는<br>엔터프라이즈급 신뢰.</h2>
+        <p class="sec-p">LG U+에서 수백만 건을 실시간 처리 중인 입증된 아키텍처를 도입하십시오.</p>
+      </div>
+      <div class="tech-callout reveal">
+        <strong>Legacy 망 ➔ API Gateway ➔ On-Device 처리</strong>
+        기존 코어 통신망(Legacy)의 구조적 변경 없이 SaaS 형태로 가볍게 얹어집니다.<br><br>
+        <span style="color:var(--primary);font-weight:600;">On-device AI</span>를 채택하여 통화 음성 데이터가 기기 밖 서버로 전송되지 않으며, 글로벌 규제 환경에 즉각 대응합니다.
+      </div>
+    </div>
+    <div class="tech-badges">
+      <div class="tbadge reveal"><div class="tcheck">✓</div><div class="thead">GDPR / CCPA 대응</div><div class="tdesc">음성 데이터를 서버에 저장하지 않는 Privacy-by-Design 원칙을 준수합니다.</div></div>
+      <div class="tbadge reveal"><div class="tcheck">✓</div><div class="thead">ISO 27001 호환 구조</div><div class="tdesc">엔터프라이즈 보안 표준을 충족하는 아키텍처로 B2B 시장 확장에 유리합니다.</div></div>
+      <div class="tbadge reveal"><div class="tcheck">✓</div><div class="thead">망 변경 없는 빠른 PoC</div><div class="tdesc">Maxis 등 글로벌 파트너들과 수 주 내에 검증을 시작한 선례를 보유하고 있습니다.</div></div>
+    </div>
+    <div class="tech-footer reveal">
+      <span>통신망 비종속적 연동</span><span class="tdot"></span>
+      <span>API 기반 유연한 확장성</span><span class="tdot"></span>
+      <span>최소한의 리소스 투입</span><span class="tdot"></span>
+      <span>즉각적인 상용화 가능</span>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section id="cta">
+  <div class="cta-wrap">
+    <div class="ctag">🤝 글로벌 통신사 파트너십 모집 중</div>
+    <h2 class="cta-h2">주도권을 되찾을<br><em>마지막 기회입니다.</em></h2>
+    <p class="cta-p">Maxis와 함께 시작한 파일럿 프로젝트가 이미 가동 중입니다.<br>다음 생태계를 함께 지배할 C-Level 파트너를 찾습니다.</p>
+    <form class="cform" onsubmit="handleSubmit(event)">
+      <div class="crow">
+        <input class="cinput" type="text" placeholder="이름 (Name)" required>
+        <input class="cinput" type="text" placeholder="회사명 (Carrier Name)" required>
+      </div>
+      <input class="cinput" type="email" placeholder="회사 공식 이메일 (Work Email)" required>
+      <button class="cbtn" type="submit"><span>ROI 파일럿 논의 시작하기</span><span>→</span></button>
+    </form>
+    <p class="cmicro">B2B 리드 전용 폼입니다. 무료 이메일(Gmail, Yahoo 등)은 필터링됩니다.</p>
+  </div>
+</section>
+
+<footer>
+  <div class="flogo"><div class="nav-badge" style="width:24px;height:24px;font-size:0.62rem;">ix</div>ixi-O Global · LG U+</div>
+  <div class="fcopy">© 2026 LG U+. All rights reserved.</div>
+</footer>
+
+<script>
+const io = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); } });
+}, { threshold: 0.07 });
+document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+async function handleSubmit(e) {
+  e.preventDefault();
+  const btn = e.target.querySelector('.cbtn');
+  const emailVal = e.target[2].value.toLowerCase();
+  
+  const blocklist = ['gmail.com', 'yahoo.com', 'hotmail.com', 'naver.com', 'daum.net'];
+  const domain = emailVal.split('@')[1];
+  
+  if (blocklist.includes(domain)) {
+    const origHtml = btn.innerHTML;
+    btn.innerHTML = '<span>⚠️ 회사 공식 이메일(Work Email)을 입력해주세요</span>';
+    setTimeout(() => { btn.innerHTML = origHtml; }, 2500);
+    return;
+  }
+
+  const orig = btn.innerHTML;
+  btn.innerHTML = '<span>전송 중...</span>';
+  btn.style.opacity = '0.6';
+  
+  try {
+    await fetch('https://formspree.io/f/xvgzpoyy', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify({ 
+        name: e.target[0].value, 
+        company: e.target[1].value, 
+        email: emailVal,
+        estimated_roi_impact: "B2B Lead (Pre-calculated)"
+      })
+    });
+    btn.innerHTML = '<span>✓ 전송 완료 — 곧 연락드리겠습니다</span>';
+    btn.style.opacity = '1';
+    e.target.reset();
+  } catch {
+    btn.innerHTML = '<span>다시 시도해주세요</span>';
+    btn.style.opacity = '1';
+  }
+}
+</script>
+</body>
+</html>
